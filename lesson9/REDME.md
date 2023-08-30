@@ -2,22 +2,31 @@
 Решение:
 
 vi /etc/sysconfig/watchlog
+
 cat /etc/sysconfig/watchlog
 
 ![image](https://github.com/DoKWhat/OTUS/assets/44500660/a044c75c-959b-451f-920a-456a05f80de7)
 
 Создадим скрипт:
+
 vi /opt/watchlog.sh
+
 cat /opt/watchlog.sh
 
 ![image](https://github.com/DoKWhat/OTUS/assets/44500660/052e919a-19b8-4e99-9525-41136d8ca95e)
 
 chmod +x /opt/watchlog.sh
+
 cd etc/systemd/system/
+
 vi watchlog.service
+
 vi watchlog.timer
+
 systemctl start watchlog.timer
+
 tail -f /var/log/messages
+
 Результат выполнения сервиса
 
 ![image](https://github.com/DoKWhat/OTUS/assets/44500660/1f9513b6-30b3-46d8-9448-82fd7b40c334)
