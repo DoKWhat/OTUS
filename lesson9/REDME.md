@@ -46,6 +46,9 @@ systemctl status spawn-fcgi
 
 ![image](https://github.com/DoKWhat/OTUS/assets/44500660/e2ed0eed-38b2-448c-b21e-4054a430d88d)
 
+
+Дополнить init-файл apache httpd возможностью зупаскать несколько инстансов сервера с разными конфигами
+
 vi /usr/lib/systemd/system/httpd.service
 vi /etc/sysconfig/httpd-first
 vi /etc/sysconfig/httpd-second
@@ -53,7 +56,7 @@ vi /etc/sysconfig/httpd-second
 vi /etc/httpd/conf/first.conf
 vi /etc/httpd/conf/second.conf
 
-
-Дополнить init-файл apache httpd возможностью зупаскать несколько инстансов сервера с разными конфигами
+systemctl start httpd@first
+systemctl start httpd@second
 
 ![image](https://github.com/DoKWhat/OTUS/assets/44500660/e71e1608-10b6-4806-8c65-081fc010292c)
