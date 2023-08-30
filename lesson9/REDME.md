@@ -50,10 +50,13 @@ systemctl status spawn-fcgi
 Дополнить init-файл apache httpd возможностью зупаскать несколько инстансов сервера с разными конфигами
 
 vi /usr/lib/systemd/system/httpd.service
+
 vi /etc/sysconfig/httpd-first
+
 vi /etc/sysconfig/httpd-second
 
 vi /etc/httpd/conf/first.conf
+
 vi /etc/httpd/conf/second.conf
 
 systemctl start httpd@first
