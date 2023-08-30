@@ -1,4 +1,18 @@
-Написать сервис, который будет раз в 30 секунд мониторить лог на предмет наличия ключевого слова. Файл и слово должны задаваться в /etc/sysconfig
+1.Написать сервис, который будет раз в 30 секунд мониторить лог на предмет наличия ключевого слова. Файл и слово должны задаваться в /etc/sysconfig
+Решение:
+vi /etc/sysconfig/watchlog
+cat /etc/sysconfig/watchlog
+![image](https://github.com/DoKWhat/OTUS/assets/44500660/a044c75c-959b-451f-920a-456a05f80de7)
+Создадим скрипт:
+vi /opt/watchlog.sh
+cat /opt/watchlog.sh
+![image](https://github.com/DoKWhat/OTUS/assets/44500660/052e919a-19b8-4e99-9525-41136d8ca95e)
+chmod +x /opt/watchlog.sh
+cd etc/systemd/system/
+vi watchlog.service
+vi watchlog.timer
+systemctl start watchlog.timer
+
 Результат выполнения сервиса
 ![Снимок экрана от 2023-08-17 15-21-22](https://github.com/DoKWhat/OTUS/assets/44500660/128fe7e0-a0cc-411a-b9b1-fc8e17c7ab41)
 
