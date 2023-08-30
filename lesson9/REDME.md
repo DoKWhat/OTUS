@@ -32,8 +32,27 @@ tail -f /var/log/messages
 ![image](https://github.com/DoKWhat/OTUS/assets/44500660/1f9513b6-30b3-46d8-9448-82fd7b40c334)
 
 
-Переписать init-скрипт на unit-файл в spawn-fcgi.
-![image](https://github.com/DoKWhat/OTUS/assets/44500660/8ef3a9e6-6144-4da9-9b6a-0930b3a085c7) 
+Из epel установить spawn-fcgi и переписать init-скрипт на unit-файл. Имя сервиса должно также называться
+
+yum install epel-release -y && yum install spawn-fcgi php php-cli mod_fcgid httpd -y
+
+vi /etc/sysconfig/spawn-fcgi
+
+vi /etc/systemd/system/spawn-fcgi.service
+
+systemctl start spawn-fcgi
+
+systemctl status spawn-fcgi
+
+![image](https://github.com/DoKWhat/OTUS/assets/44500660/e2ed0eed-38b2-448c-b21e-4054a430d88d)
+
+vi /usr/lib/systemd/system/httpd.service
+vi /etc/sysconfig/httpd-first
+vi /etc/sysconfig/httpd-second
+
+vi /etc/httpd/conf/first.conf
+vi /etc/httpd/conf/second.conf
+
 
 Дополнить init-файл apache httpd возможностью зупаскать несколько инстансов сервера с разными конфигами
 
