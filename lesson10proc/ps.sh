@@ -14,7 +14,6 @@ for pid in `ls /proc | grep -E "^[0-9]+$"`; do
         state=`echo "$stat" | awk -F" " '{print $3}'`
         tty=`echo "$stat" | awk -F" " '{print $7}'`
 
-        # https://stackoverflow.com/questions/16726779/how-do-i-get-the-total-cpu-usage-of-an-application-from-proc-pid-stat
         utime=`echo "$stat" | awk -F" " '{print $14}'`
         stime=`echo "$stat" | awk -F" " '{print $15}'`
         ttime=$((utime + stime))
