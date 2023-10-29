@@ -46,3 +46,4 @@ systemctl restart chronyd
 systemctl status chronyd
 
 ```
+![Alt text](1.png)
