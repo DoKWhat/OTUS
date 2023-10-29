@@ -29,3 +29,13 @@
 **Решение**
 
 Создаем ВМ из Vagrantfile
+
+Настраиваем одинаковое время на машинах web и log
+
+```
+vagrant ssh web
+sudo -i
+cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+systemctl restart chronyd
+systemctl status chronyd
+```
