@@ -48,3 +48,12 @@ systemctl status chronyd
 ```
 ![Alt text](1.png)
 ![Alt text](2.png)
+
+**Установка, настрйока и проверка работы nginx**
+
+```
+yum install epel-release
+yum install -y nginx
+systemctl start nginx
+
+```
