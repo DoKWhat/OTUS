@@ -38,4 +38,11 @@ sudo -i
 cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 systemctl restart chronyd
 systemctl status chronyd
+
+vagrant ssh log
+sudo -i
+cp /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+systemctl restart chronyd
+systemctl status chronyd
+
 ```
