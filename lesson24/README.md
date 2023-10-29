@@ -55,5 +55,8 @@ systemctl status chronyd
 yum install epel-release
 yum install -y nginx
 systemctl start nginx
-
 ```
+
+Проверяем работу nginx попыткой зайти на веб
+
+![Alt text](3.png)
