@@ -60,3 +60,38 @@ systemctl start nginx
 Проверяем работу nginx попыткой зайти на веб
 
 ![Alt text](3.png)
+
+**Настройка центрального сервера сбора логов**
+
+```
+vagrant ssh log
+sudo -i
+nano /etc/rsyslog.conf
+```
+
+![Alt text](4.png)
+![Alt text](5.png)
+
+```
+systemctl restart rsyslog
+```
+
+**Настройка отправки логов с web-сервера**
+
+```
+vagrant ssh web
+sudo -i
+nano /etc/nginx/nginx.conf
+```
+
+![Alt text](6.png)
+
+Проверяем сыпятся ли ошибки - удаляем картинку, к которой обращается nginx, пытаемся обратиться, смотрим логи
+```
+systemctl restart nginx
+rm /usr/share/nginx/html/img/header-background.png
+cat /var/log/rsyslog/web/nginx_access.log
+```
+![Alt text](7.png)
+
+**Настройка аудита, контролирующего изменения конфигурации nginx**
