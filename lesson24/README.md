@@ -95,3 +95,40 @@ cat /var/log/rsyslog/web/nginx_access.log
 ![Alt text](7.png)
 
 **Настройка аудита, контролирующего изменения конфигурации nginx**
+
+```
+nano /etc/audit/rules.d/audit.rules
+```
+![Alt text](8.png)
+
+```
+service auditd restart
+```
+Проверяем локальную запись логов
+![Alt text](9.png)
+```
+yum -y install audispd-plugins
+nano /etc/audit/auditd.conf
+```
+![Alt text](10.png)
+```
+nano /etc/audisp/plugins.d/au-remote.conf
+nano /etc/audisp/audisp-remote.conf
+service auditd restart
+```
+![Alt text](11.png)
+![Alt text](12.png)
+
+```
+vagrant ssh log
+nano /etc/audit/auditd.conf
+service auditd restart
+```
+![Alt text](13.png)
+```
+ls -l /etc/nginx/nginx.conf
+chmod +x /etc//nginx/nginx.conf
+ls -l /etc/nginx/nginx.conf
+```
+![Alt text](14.png)
+![Alt text](15.png)
