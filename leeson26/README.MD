@@ -44,3 +44,10 @@ borg create --stats --list borg@192.168.56.15:/var/backup/::"etc-{now:%Y-%m-%d_%
 borg list borg@192.168.56.15:/var/backup/
 ```
 ![Alt text](1.png)
+
+Создаем сервис и таймер в каталоге /etc/systemd/system/
+![Alt text](2.png)
+![Alt text](3.png)
+
+Проверяем работу таймера
+![Alt text](4.png)
