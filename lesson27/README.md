@@ -83,5 +83,45 @@ vi /etc/network/if-pre-up.d/iptables
 sudo chmod +x /etc/network/if-pre-up.d/iptables
 reboot
 ```
+**Маршрутизация транзитных пакетов (IP forward)**
+```
+echo "net.ipv4.conf.all.forwarding = 1" >> /etc/sysctl.conf
+sysctl -p
+```
+Отключаем маршрут по умолчанию
+```
+nano /etc/netplan/00-installer-config.yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp4-overrides:
+          use-routes: false
+      dhcp6: false
+  version: 2
+netplan try
+```
+**Настройка статических маршрутов**
+Создаем статические маршруты для всех машин. Тут показан yaml файл office1Server, остальные сделаны по подобию
+```
+ssh officeRouter
+nano /etc/netplan/50-vagrant.yaml
+
+---
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s8:
+      addresses:
+      - 192.168.2.130/26
+      routes:
+      - to: 0.0.0.0/0
+        via: 192.168.2.129
+    enp0s19:
+      addresses:
+      - 192.168.50.21/24
+```
 
 
