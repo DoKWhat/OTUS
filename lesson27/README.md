@@ -20,13 +20,14 @@
 - 192.168.0.64/26    - wifi
 
 Итого должны получиться следующие сервера:
-inetRouter
-centralRouter
-office1Router
-office2Router
-centralServer
-office1Server
-office2Server
+- inetRouter
+- centralRouter
+- office1Router
+- office2Router
+- centralServer
+- office1Server
+- office2Server
+
 
 Изучив таблицу топологии сети и Vagrant-стенд из задания, мы можем построить полную схему сети:
 
