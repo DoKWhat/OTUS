@@ -19,4 +19,25 @@ sudo -i
 sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 yum install httpd
+vi /etc/httpd/conf.d/pxeboot.conf
 ```
+Вносим в конфиг файл следующие данные (кстати, в ДЗ ошибка, нет "</Directory>", без нее, естесвенно, апач не запускается):
+![Alt text](1.png)
+
+Работаем с iso образом (кстати, ссылка внутри ДЗ нерабочая, образ удален, еще и сертифкат на топ репо истек!)
+```
+wget https://vault.centos.org/8.4.2105/isos/x86_64/CentOS-8.4.2105-x86_64-dvd1.iso
+mount -t iso9660 CentOS-8.4.2105-x86_64-dvd1.iso /mnt -o loop,ro
+mkdir /iso
+cp -r /mnt/* /iso
+chmod -R 755 /iso
+```
+Перезапускаем Апач и проверяем доступность файлов по сети
+```
+systemctl restart httpd
+systemctl enable httpd
+```
+![Alt text](2.png)
+
+
+
