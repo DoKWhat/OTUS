@@ -53,4 +53,24 @@ cp /iso/images/pxeboot/{initrd.img,vmlinuz} /var/lib/tftpboot/
 systemctl restart tftp.service 
 systemctl enable tftp.service
 ```
+**Настройка DHCP-сервера**
+```
+yum install dhcp-server
+vi /etc/dhcp/dhcpd.conf
+```
+![Alt text](dhcp.png)
+Проверяем что загрузка работает:
+![Alt text](3.png)
 
+**Настройка автоматической установки с помощью Kickstart-файла**
+```
+vi /iso/ks.cfg
+```
+![Alt text](ks.png)
+```
+vi /var/lib/tftpboot/pxelinux.cfg/default
+```
+![Alt text](default.png)
+
+После внесения данных изменений, можем перезапустить нашу ВМ pxeclient и проверить, что запустится процесс автоматической установки ОС.
+![Alt text](4.png)
