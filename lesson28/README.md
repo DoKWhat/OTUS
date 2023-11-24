@@ -14,14 +14,14 @@ vagrant up
 vagrant ssh pxeserver
 sudo -i
 ```
-Настраиваем Web server
+**Настраиваем Web server**
 ```
 sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 yum install httpd
 vi /etc/httpd/conf.d/pxeboot.conf
 ```
-Вносим в конфиг файл следующие данные (кстати, в ДЗ ошибка, нет "< /Directory >", без нее, естесвенно, апач не запускается):
+Вносим в конфиг файл следующие данные (кстати, в ДЗ ошибка, нет последней строки "< /Directory >", без нее апач не запускается):
 ![Alt text](1.png)
 
 Работаем с iso образом (кстати, ссылка внутри ДЗ нерабочая, образ удален, еще и сертифкат на топ репо истек!)
@@ -39,5 +39,18 @@ systemctl enable httpd
 ```
 ![Alt text](2.png)
 
-
+**Настройка TFTP-сервера**
+TFTP-сервер потребуется для отправки первичных файлов загрузки (vmlinuz, initrd.img и т. д.)
+```
+yum install tftp-server
+systemctl start tftp.service
+mkdir /var/lib/tftpboot/pxelinux.cfg
+vi /var/lib/tftpboot/pxelinux.cfg/default
+rpm2cpio /iso/BaseOS/Packages/syslinux-tftpboot-6.04-5.el8.noarch.rpm | cpio -dimv
+cd tftpboot
+cp pxelinux.0 ldlinux.c32 libmenu.c32 libutil.c32 menu.c32 vesamenu.c32 /var/lib/tftpboot/
+cp /iso/images/pxeboot/{initrd.img,vmlinuz} /var/lib/tftpboot/
+systemctl restart tftp.service 
+systemctl enable tftp.service
+```
 
