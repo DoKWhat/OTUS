@@ -22,7 +22,15 @@ yum install httpd
 vi /etc/httpd/conf.d/pxeboot.conf
 ```
 Вносим в конфиг файл следующие данные (кстати, в ДЗ ошибка, нет последней строки "< /Directory >", без нее апач не запускается):
-![Alt text](1.png)
+```
+Alias /centos8 /iso
+#Указываем адрес директории /iso
+<Directory /iso>
+    Options Indexes FollowSymLinks
+    #Разрешаем подключения со всех ip-адресов
+    Require all granted
+</Directory>
+```
 
 Работаем с iso образом (кстати, ссылка внутри ДЗ нерабочая, образ удален, еще и сертифкат на топ репо истек!)
 ```
