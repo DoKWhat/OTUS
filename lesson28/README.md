@@ -5,4 +5,18 @@
 В качестве шаблона воспользуйтесь репозиторием https://github.com/nixuser/virtlab/tree/main/centos_pxe 
 2. Поменять установку из репозитория NFS на установку из репозитория HTTP.
 3. Настроить автоматическую установку для созданного kickstart файла (*) Файл загружается по HTTP.
-* 4.  автоматизировать процесс установки Cobbler cледуя шагам из документа https://cobbler.github.io/quickstart/.
+
+**Решение**
+
+После внесения всех изменений запускаем стэнд
+```
+vagrant up
+vagrant ssh pxeserver
+sudo -i
+```
+Настраиваем Web server
+```
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+yum install httpd
+```
