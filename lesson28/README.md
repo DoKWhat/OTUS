@@ -73,4 +73,6 @@ vi /var/lib/tftpboot/pxelinux.cfg/default
 ![Alt text](default.png)
 
 После внесения данных изменений, можем перезапустить нашу ВМ pxeclient и проверить, что запустится процесс автоматической установки ОС.
+
+
 ![Alt text](4.png)
