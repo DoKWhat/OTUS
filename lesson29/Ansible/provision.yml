@@ -1,0 +1,118 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Knock Server
+    block:
+      - name: Install knockd
+        delegate_to: app1
+        apt:
+          deb: http://archive.ubuntu.com/ubuntu/pool/universe/k/knockd/knockd_0.7-1ubuntu3_amd64.deb
+        become: true
+
+      - name: Copy knock config
+        copy:
+          src: knockd.conf
+          dest: /etc/knockd.conf
+          owner: root
+          group: root
+          mode: 0600
+  
+      - name: Start Knock Server
+        systemd:
+          name: knockd
+          enabled: true
+          state: started
+    when: (ansible_hostname == "inetRouter")
+
+  - name: install nginx centralServer
+    block:
+      -  name: install nginx
+          apt: 
+            name: nginx
+            state: latest
+          become: true
+      
+      - name: Change nginx port to 8080
+        replace:
+          path: /etc/nginx/conf.d/default.conf
+          regexp: '    listen       80;'
+          replace: '    listen       8080;'
+  
+      - name: start nginx
+        service:
+          name: nginx
+          state: started
+    when: (ansible_hostname == "centralServer")
+
+  - name: Conf inetRouter2
+    block:
+      - name: Install iptables
+        apt: name=iptables state=latest
+        update_cache: true
+      
+       - name: Copy iptables config
+        template:
+          src: inetRouter2_iptables.j2
+          dest: /etc/sysconfig/iptables
+          owner: root
+          group: root
+          mode: 0600
+
+      - name: Start and enable iptables service
+        service:
+          name: iptables
+          state: restarted
+          enabled: true
+    when: (ansible_hostname == "inetRouter2")
+
+  - name: NAT inetRouter
+    block:
+      - name: Install iptables
+        apt: name=iptables state=latest
+        update_cache: true
+      
+       - name: Copy iptables config
+        template:
+          src: inetRouter_iptables.j2
+          dest: /etc/sysconfig/iptables
+          owner: root
+          group: root
+          mode: 0600
+
+      - name: Start and enable iptables service
+        service:
+          name: iptables
+          state: restarted
+          enabled: true
+    when: (ansible_hostname == "inetRouter")
+
+  - name: set up forward packages across routers
+    sysctl:
+      name: net.ipv4.conf.all.forwarding
+      value: '1'
+      state: present
+    when: "'routers' in group_names"
+
+  - name: disable default route
+    template: 
+      src: 00-installer-config.yaml
+      dest: /etc/netplan/00-installer-config.yaml
+      owner: root
+      group: root
+      mode: 0644
+    when: (ansible_hostname != "inetRouter")
+
+  - name: add default gateway for centralRouter
+    template: 
+      src: "50-vagrant_{{ansible_hostname}}.yaml"
+      dest: /etc/netplan/50-vagrant.yaml
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: restart all hosts
+    reboot:
+      reboot_timeout: 600
+
+
