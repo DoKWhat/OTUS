@@ -402,33 +402,6 @@ exit
 
 После внесения данных настроек, мы видим, что маршрут до сети 192.168.10.0/30 пойдёт через router3.
 
-Давайте это проверим:
 
-- На router1 запускаем пинг от 192.168.10.1 до 192.168.20.1: ping -I 192.168.10.1 192.168.20.1
-- На router2 запускаем tcpdump, который будет смотреть трафик только на порту enp0s9:
-
-```bash
-tcpdump -i enp0s9
-
-
-17:37:24.812303 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 34, length 64
-17:37:24.812336 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 34, length 64
-17:37:25.896896 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 35, length 64
-17:37:25.896941 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 35, length 64
-17:37:26.898998 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 36, length 64
-17:37:26.899024 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 36, length 64
-17:37:27.911954 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 37, length 64
-17:37:27.912088 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 37, length 64
-17:37:28.913899 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 38, length 64
-17:37:28.913937 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 38, length 64
-17:37:29.937532 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 39, length 64
-17:37:29.937560 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 39, length 64
-17:37:30.930521 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 40, length 64
-17:37:30.930555 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 40, length 64
-17:37:32.108018 IP 192.168.10.1 > router2: ICMP echo request, id 10, seq 41, length 64
-17:37:32.108048 IP router2 > 192.168.10.1: ICMP echo reply, id 10, seq 41, length 64
-```
-
-> Теперь мы видим, что трафик между роутерами ходит симметрично.
 
 
