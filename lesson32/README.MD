@@ -277,11 +277,6 @@ default-information originate always
 
 На хостах router2 и router3 также потребуется настроить конфигруационные файлы, предварительно поменяв ip -адреса интерфейсов.
 
-В ходе создания файла мы видим несколько OSPF-параметров, которые требуются для настройки:
-
-- hello-interval — интервал который указывает через сколько секунд протокол OSPF будет повторно отправлять запросы на другие роутеры. Данный интервал должен быть одинаковый на всех портах и роутерах, между которыми настроен OSPF.
-- Dead-interval — если в течении заданного времени роутер не отвечает на запросы, то он считается вышедшим из строя и пакеты уходят на другой роутер (если это возможно). Значение должно быть кратно hello-интервалу. Данный интервал должен быть одинаковый на всех портах и роутерах, между которыми настроен OSPF.
-- router-id — идентификатор маршрутизатора (необязательный параметр), если данный параметр задан, то роутеры определяют свои роли по данному параметру. Если данный идентификатор не задан, то роли маршрутизаторов определяются с помощью Loopback-интерфейса или самого большого ip-адреса на роутере.
 
 - После создания файлов /etc/frr/frr.conf и /etc/frr/daemons нужно проверить, что владельцем файла является пользователь frr. Группа файла также должна быть frr. 
 
@@ -318,33 +313,6 @@ systemctl enable frr
 
 ```bash
 systemctl status frr
-● frr.service - FRRouting
-     Loaded: loaded (/lib/systemd/system/frr.service; enabled; vendor preset: enabled)
-     Active: active (running) since Tue 2023-10-10 13:10:41 UTC; 47min ago
-       Docs: https://frrouting.readthedocs.io/en/latest/setup.html
-    Process: 5931 ExecStart=/usr/lib/frr/frrinit.sh start (code=exited, status=0/SUCCESS)
-   Main PID: 5947 (watchfrr)
-     Status: "FRR Operational"
-      Tasks: 10 (limit: 1131)
-     Memory: 17.6M
-     CGroup: /system.slice/frr.service
-             ├─5947 /usr/lib/frr/watchfrr -d -F traditional zebra mgmtd ospfd staticd
-             ├─5962 /usr/lib/frr/zebra -d -F traditional -A 127.0.0.1 -s 90000000
-             ├─5967 /usr/lib/frr/mgmtd -d -F traditional
-             ├─5969 /usr/lib/frr/ospfd -d -F traditional -A 127.0.0.1
-             └─5972 /usr/lib/frr/staticd -d -F traditional -A 127.0.0.1
-
-Oct 10 13:10:36 router1 staticd[5972]: [VTVCM-Y2NW3] Configuration Read in Took: 00:00:00
-Oct 10 13:10:36 router1 frrinit.sh[5992]: [5992|staticd] Configuration file[/etc/frr/frr.conf] processing failure: 2
-Oct 10 13:10:36 router1 watchfrr[5947]: [ZJW5C-1EHNT] restart all process 5948 exited with non-zero status 2
-Oct 10 13:10:41 router1 watchfrr[5947]: [QDG3Y-BY5TN] zebra state -> up : connect succeeded
-Oct 10 13:10:41 router1 watchfrr[5947]: [QDG3Y-BY5TN] ospfd state -> up : connect succeeded
-Oct 10 13:10:41 router1 watchfrr[5947]: [QDG3Y-BY5TN] staticd state -> up : connect succeeded
-Oct 10 13:10:41 router1 frrinit.sh[5931]:  * Started watchfrr
-Oct 10 13:10:41 router1 systemd[1]: Started FRRouting.
-Oct 10 13:10:41 router1 watchfrr[5947]: [QDG3Y-BY5TN] mgmtd state -> up : connect succeeded
-Oct 10 13:10:41 router1 watchfrr[5947]: [KWE5Q-QNGFC] all daemons up, doing startup-complete notify
-
 ```
 
 Если мы правильно настроили OSPF, то с любого хоста нам должны быть доступны сети:
@@ -356,187 +324,7 @@ Oct 10 13:10:41 router1 watchfrr[5947]: [KWE5Q-QNGFC] all daemons up, doing star
 - 10.0.11.0/30
 - 10.0.13.0/30
 
-Проверим доступность сетей с хоста router1:
 
-- попробуем сделать ping до ip-адреса 192.168.30.1
-
-```bash
-ping 192.168.30.1
-PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
-64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=0.743 ms
-64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.958 ms
-64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.913 ms
-64 bytes from 192.168.30.1: icmp_seq=4 ttl=64 time=0.970 ms
-64 bytes from 192.168.30.1: icmp_seq=5 ttl=64 time=1.02 ms
-^C
---- 192.168.30.1 ping statistics ---
-5 packets transmitted, 5 received, 0% packet loss, time 4009ms
-rtt min/avg/max/mdev = 0.743/0.920/1.017/0.094 ms
-```
-
-- Запустим трассировку до адреса 192.168.30.1
-
-```bash
-traceroute 192.168.30.1
-traceroute to 192.168.30.1 (192.168.30.1), 30 hops max, 60 byte packets
- 1  ubuntu22 (192.168.30.1)  0.762 ms  0.685 ms  0.909 ms
-```
-
-Попробуем отключить интерфейс enp0s9 и немного подождем и снова запустим трассировку до ip-адреса 192.168.30.1
-
-```bash
-ifconfig enp0s9 down
-
-ip a | grep enp0s9
-4: enp0s9: <BROADCAST,MULTICAST> mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
-
-traceroute 192.168.30.1
-
-traceroute 192.168.30.1
-traceroute to 192.168.30.1 (192.168.30.1), 30 hops max, 60 byte packets
- 1  10.0.10.2 (10.0.10.2)  0.933 ms  0.853 ms  0.814 ms
- 2  ubuntu22 (192.168.30.1)  1.574 ms  1.311 ms  1.266 ms
-```
-
-Как мы видим, после отключения интерфейса сеть 192.168.30.0/24 нам остаётся доступна.
-
-Также мы можем проверить из интерфейса vtysh какие маршруты мы видим на данный момент:
-
-```bash
-vtysh
-
-Hello, this is FRRouting (version 8.2.2).
-Copyright 1996-2005 Kunihiro Ishiguro, et al.
-
-show ip route ospf
-Codes: K - kernel route, C - connected, S - static, R - RIP,
-       O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
-       T - Table, v - VNC, V - VNC-Direct, A - Babel, F - PBR,
-       f - OpenFabric,
-       > - selected route, * - FIB route, q - queued, r - rejected, b - backup
-       t - trapped, o - offload failure
-
-O   10.0.10.0/30 [110/100] is directly connected, enp0s8, weight 1, 00:05:51
-O>* 10.0.11.0/30 [110/200] via 10.0.10.2, enp0s8, weight 1, 00:03:29
-O>* 10.0.12.0/30 [110/300] via 10.0.10.2, enp0s8, weight 1, 00:03:04
-O   192.168.10.0/24 [110/100] is directly connected, enp0s10, weight 1, 00:07:04
-O>* 192.168.20.0/24 [110/200] via 10.0.10.2, enp0s8, weight 1, 00:05:39
-O>* 192.168.30.0/24 [110/300] via 10.0.10.2, enp0s8, weight 1, 00:03:29
-```
-
-- Включим интерфейс обратно
-
-```bash
-ifconfig enp0s9 up
-```
-
-Настройка OSPF c помощью Ansible:
-
-```yml
-    # Отключаем UFW и удаляем его из автозагрузки
-    - name: disable ufw service
-      service:
-        name: ufw
-        state: stopped
-        enabled: false
-    # Добавляем gpg-key репозитория
-    - name: add gpg frrouting.org
-      apt_key:
-        url: "https://deb.frrouting.org/frr/keys.asc"
-        state: present
-    # Добавляем репозиторий https://deb.frrouting.org/frr
-    - name: add frr repo
-      apt_repository:
-        repo: 'deb https://deb.frrouting.org/frr {{ ansible_distribution_release }} frr-stable'
-        state: present
-    # Обновляем пакеты и устанавливаем FRR
-    - name: install FRR packages
-      apt:
-        name:
-          - frr
-          - frr-pythontools
-        state: present
-        update_cache: true
-    # Включаем маршрутизацию транзитных пакетов
-    - name: set up forward packages across routers
-      sysctl:
-        name: net.ipv4.conf.all.forwarding
-        value: '1'
-        state: present
-    # Копируем файл daemons на хосты, указываем владельца и права
-    - name: base set up OSPF
-      template:
-        src: daemons
-        dest: /etc/frr/daemons
-        owner: frr
-        group: frr
-        mode: 0640
-    # Копируем файл frr.conf на хосты, указываем владельца и права
-    - name: set up OSPF
-      template:
-        src: frr.conf.j2
-        dest: /etc/frr/frr.conf
-        owner: frr
-        group: frr
-        mode: 0640
-    # Перезапускам FRR и добавляем в автозагрузку
-    - name: restart FRR
-      service:
-        name: frr
-        state: restarted
-        enabled: true
-```
-
-Файлы daemons и frr.conf должны лежать в каталоге ansible/templates.
-
-Давайте подробнее рассмотрим эти файлы. Содержимое файла daemons одинаково на всех хостах, а вот содержание файла frr.conf на всех хостах будет разное.
-
-Для того, чтобы не создавать 3 похожих файла, можно воспользоваться jinja2 template. Jinja2 позволит добавлять в файл уникальные значения для разных серверов.
-
-Перед тем, как начать настройку хостов Ansible забирает информацию о каждом хосте. Эту информацию можно использовать в jinja2 темплейтах.
-
-Посмотреть, какую информацию о сервере собрал Ansible можно с помощью команды:
-
-```bash
-ansible router1 -i ansible/hosts -m setup -e "host_key_checking=false"
-```
-
-Команда выполнятся из каталога проекта (где находится Vagrantfile).
-
-Помимо фактов Jinja2 может брать информацию из файлов hosts и defaults/main.yml (так как мы указали его в начале файла provision.yml)
-
-Примеры использования jinja2:
-
-- В файле frr.conf у нас есть строка:
-
-hostname router1
-
-Когда мы будем копировать файл на router2 и router3 нам нужно будет поменять имя. Сделать это можно так: hostname {{ ansible_hostname }}
-
-ansible_hostname - заберет из фактов имя хостов и подставит нужное имя
-
-- Допустим мы хотим перед настройкой OSPF выбрать, будем ли мы указывать router-id. Для этого в файле defaults/main.yml создаем переменную router_id_enable: false
-
-По умолчанию назначаем ей значение **false**
-
-Значение router_id мы можем задать в файле hosts, дописав его в конец строки наших хостов:
-
-```bash
-[routers]
-router1 ansible_host=192.168.50.10 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/router1/virtualbox/private_key router_id=1.1.1.1
-router2 ansible_host=192.168.50.11 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/router2/virtualbox/private_key router_id=2.2.2.2
-router3 ansible_host=192.168.50.12 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/router3/virtualbox/private_key router_id=3.3.3.3
-```
-
-В темплейте файла frr.conf укажем следующее условие:
-
-```bash
-{% if router_id_enable == false %}!{% endif %}router-id {{ router_id }}
-```
-
-Данное правило в любом случае будет подставлять значение router-id, но, если параметр router_id_enable будет равен значению false, то в начале строки будет ставиться символ ! (восклицательный знак) и строка не будет учитываться в настройках FRR.
-
-Более подробно о создании темплейтов можно прочитать по этой ссылке - <https://docs.ansible.com/ansible/2.9/user_guide/playbooks_templating.html>
 
 ### Настройка ассиметричного роутинга
 
@@ -557,19 +345,6 @@ exit
 exit
 show ip route ospf
 
-Codes: K - kernel route, C - connected, S - static, R - RIP,
-       O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
-       T - Table, v - VNC, V - VNC-Direct, A - Babel, F - PBR,
-       f - OpenFabric,
-       > - selected route, * - FIB route, q - queued, r - rejected, b - backup
-       t - trapped, o - offload failure
-
-O   10.0.10.0/30 [110/300] via 10.0.12.2, enp0s9, weight 1, 00:00:12
-O>* 10.0.11.0/30 [110/200] via 10.0.12.2, enp0s9, weight 1, 00:00:12
-O   10.0.12.0/30 [110/100] is directly connected, enp0s9, weight 1, 00:03:33
-O   192.168.10.0/24 [110/100] is directly connected, enp0s10, weight 1, 00:03:33
-O>* 192.168.20.0/24 [110/300] via 10.0.12.2, enp0s9, weight 1, 00:00:12
-O>* 192.168.30.0/24 [110/200] via 10.0.12.2, enp0s9, weight 1, 00:02:59
 ```
 
 На router2
@@ -581,65 +356,11 @@ Hello, this is FRRouting (version 8.2.2).
 Copyright 1996-2005 Kunihiro Ishiguro, et al.
 
 show ip route ospf
-Codes: K - kernel route, C - connected, S - static, R - RIP,
-       O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
-       T - Table, v - VNC, V - VNC-Direct, A - Babel, F - PBR,
-       f - OpenFabric,
-       > - selected route, * - FIB route, q - queued, r - rejected, b - backup
-       t - trapped, o - offload failure
 
-O   10.0.10.0/30 [110/100] is directly connected, enp0s8, weight 1, 00:04:38
-O   10.0.11.0/30 [110/100] is directly connected, enp0s9, weight 1, 00:04:38
-O>* 10.0.12.0/30 [110/200] via 10.0.10.1, enp0s8, weight 1, 00:03:58
-  *                        via 10.0.11.1, enp0s9, weight 1, 00:03:58
-O>* 192.168.10.0/24 [110/200] via 10.0.10.1, enp0s8, weight 1, 00:03:58
-O   192.168.20.0/24 [110/100] is directly connected, enp0s10, weight 1, 00:04:38
-O>* 192.168.30.0/24 [110/200] via 10.0.11.1, enp0s9, weight 1, 00:03:58
 ```
 
 После внесения данных настроек, мы видим, что маршрут до сети 192.168.20.0/30 теперь пойдёт через router3, но обратный трафик от router2 пойдёт по другому пути.
 
-Давайте это проверим:
-
-- На router1 запускаем пинг от 192.168.10.1 до 192.168.20.1: ping -I 192.168.10.1 192.168.20.1
-- На router2 запускаем tcpdump, который будет смотреть трафик только на порту enp0s9:
-
-```bash
-tcpdump -i enp0s9
-
-17:03:23.793254 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 51, length 64
-17:03:24.794375 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 52, length 64
-17:03:25.809719 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 53, length 64
-17:03:26.832828 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 54, length 64
-17:03:27.857653 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 55, length 64
-17:03:28.858986 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 56, length 64
-17:03:29.873955 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 57, length 64
-17:03:30.876495 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 58, length 64
-17:03:31.878297 IP 192.168.10.1 > router2: ICMP echo request, id 8, seq 59, length 64
-```
-
-> Видим что данный порт только получает ICMP-трафик с адреса 192.168.10.1
-
-На router2 запускаем tcpdump, который будет смотреть трафик только на порту enp0s8:
-
-```bash
-tcpdump -i enp0s8
-
-17:08:13.594894 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 159, length 64
-17:08:14.595704 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 160, length 64
-17:08:15.601049 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 161, length 64
-17:08:16.624664 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 162, length 64
-17:08:17.648986 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 163, length 64
-17:08:18.672813 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 164, length 64
-17:08:19.697714 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 165, length 64
-17:08:20.727868 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 166, length 64
-17:08:21.727990 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 167, length 64
-17:08:22.736613 IP router2 > 192.168.10.1: ICMP echo reply, id 8, seq 168, length 64
-```
-
-> Видим что данный порт только отправляет ICMP-трафик на адрес 192.168.10.1
-
-Таким образом мы видим ассиметричный роутинг.
 
 
 Так как у нас уже есть один «дорогой» интерфейс, нам потребуется добавить ещё один дорогой интерфейс, чтобы у нас перестала работать ассиметричная маршрутизация.
