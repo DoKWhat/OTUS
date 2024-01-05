@@ -58,7 +58,7 @@ Split DNS (split-horizon или split-brain) — это конфигурация
 
 ### Описание домашнего задания
 
-#### взять стенд <https://github.com/erlong15/vagrant-bind>
+
 
 - добавить еще один сервер client2
 - завести в зоне dns.lab имена:
@@ -77,7 +77,7 @@ Split DNS (split-horizon или split-brain) — это конфигурация
 
 ### Работа со стендом и настройка DNS
 
-Скачаем себе стенд <https://github.com/erlong15/vagrant-bind>, перейдём в скаченный каталог и изучим содержимое файлов:
+Скачаем себе стенд, перейдём в скаченный каталог и изучим содержимое файлов:
 
 ```bash
 git clone https://github.com/erlong15/vagrant-bind.git
