@@ -3,8 +3,8 @@
 # Цель домашнего задания
 Научиться настраивать LDAP-сервер и подключать к нему LDAP-клиентов
 
-# Примичание
-Т.к. CentOS 8Stream нет на вагранте, дз делалось на CentOS 7
+# Примeчание
+Т.к. CentOS8 Stream нет на вагранте, дз делалось на CentOS 7
 
 # Выполнение
 Настройка FreeIPA сервера:
@@ -23,7 +23,10 @@ systemctl disable firewalld
 setenforce 0
 ```
 Поменяем в файле /etc/selinux/config, параметр Selinux на disabled
+
+```
 vi /etc/selinux/config
+```
 
 Правим файл hosts
 
