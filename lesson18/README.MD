@@ -59,7 +59,6 @@ COPY index.html /usr/share/nginx/html/
 ```
 docker build -t dokwhat:nginx
 ```
-![Alt text](image-4.png)
 
 * Запускаем образ
 ```
