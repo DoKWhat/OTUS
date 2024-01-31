@@ -1,6 +1,6 @@
 # MySQL репликация
 
-Разворачиваеим виртуалки в Vagrant (master,slave) с установкой mysql версии 5.7
+Разворачиваеим виртуалки в Vagrant (master,slave)
 
 ```
 vagrant up
@@ -20,11 +20,16 @@ yum install -y Percona-Server-server-57
 
 По умолчанию Percona хранит файлы в таком виде:
 
-- Основной конфиг в /etc/my.cnf
-- Так же инклудится директориā /etc/my.cnf.d/ - куда мы и будем складывать наши конфиги
-- Дата файлы в /var/lib/mysql
+Основной конфиг в /etc/my.cnf
+Так же инклудится директориā /etc/my.cnf.d/ - куда мы и будем складывать наши конфиги
+Дата файлы в /var/lib/mysql
 
-- Копируем конфиги из /vagrant/conf.d в /etc/my.cnf.d/
+# Настраиваем мастер. Подключаемся
+```
+vagrant ssh master
+```
+
+Копируем конфиги из /vagrant/conf.d в /etc/my.cnf.d/
 
 ```
 cp /vagrant/conf/conf.d/* /etc/my.cnf.d/
