@@ -39,19 +39,10 @@ type=AVC msg=audit(1688748432.680:531): avc:  denied  { name_bind } for  pid=210
 [root@localhost ~]# systemctl status nginx
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Fri 2023-07-07 17:06:52 UTC; 9s ago
+   Active: active (running) since Tue 2023-02-06 17:06:52 UTC; 9s ago
   Process: 3154 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
   Process: 3151 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
   Process: 3150 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 3156 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─3156 nginx: master process /usr/sbin/nginx
-           └─3158 nginx: worker process
-
-Jul 07 17:06:52 localhost.localdomain systemd[1]: Starting The nginx HTTP and reverse proxy server...
-Jul 07 17:06:52 localhost.localdomain nginx[3151]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-Jul 07 17:06:52 localhost.localdomain nginx[3151]: nginx: configuration file /etc/nginx/nginx.conf test is successful
-Jul 07 17:06:52 localhost.localdomain systemd[1]: Started The nginx HTTP and reverse proxy server.
 ```
 > Также можно проверить работу nginx из браузера. Заходим в любой браузер на хосте и переходим по адресу http://127.0.0.1:4881
 
@@ -93,19 +84,7 @@ pegasus_http_port_t            tcp      5988
 [root@localhost ~]# systemctl status nginx
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Fri 2023-07-07 17:13:20 UTC; 7s ago
-  Process: 3213 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 3211 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 3210 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 3215 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─3215 nginx: master process /usr/sbin/nginx
-           └─3217 nginx: worker process
-
-Jul 07 17:13:20 localhost.localdomain systemd[1]: Starting The nginx HTTP and reverse proxy server...
-Jul 07 17:13:20 localhost.localdomain nginx[3211]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-Jul 07 17:13:20 localhost.localdomain nginx[3211]: nginx: configuration file /etc/nginx/nginx.conf test is successful
-Jul 07 17:13:20 localhost.localdomain systemd[1]: Started The nginx HTTP and reverse proxy server.
+   Active: active (running) 
 ```
 > Также можно проверить работу nginx из браузера. Заходим в любой браузер на хосте и переходим по адресу http://127.0.0.1:4881
 
@@ -131,21 +110,7 @@ Job for nginx.service failed because the control process exited with error code.
 [root@localhost ~]# systemctl status nginx
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: failed (Result: exit-code) since Fri 2023-07-07 17:15:03 UTC; 30s ago
-  Process: 3213 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 3236 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=1/FAILURE)
-  Process: 3235 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 3215 (code=exited, status=0/SUCCESS)
-
-Jul 07 17:15:03 localhost.localdomain systemd[1]: Stopped The nginx HTTP and reverse proxy server.
-Jul 07 17:15:03 localhost.localdomain systemd[1]: Starting The nginx HTTP and reverse proxy server...
-Jul 07 17:15:03 localhost.localdomain nginx[3236]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-Jul 07 17:15:03 localhost.localdomain nginx[3236]: nginx: [emerg] bind() to 0.0.0.0:4881 failed (13: Permission denied)
-Jul 07 17:15:03 localhost.localdomain nginx[3236]: nginx: configuration file /etc/nginx/nginx.conf test failed
-Jul 07 17:15:03 localhost.localdomain systemd[1]: nginx.service: control process exited, code=exited status=1
-Jul 07 17:15:03 localhost.localdomain systemd[1]: Failed to start The nginx HTTP and reverse proxy server.
-Jul 07 17:15:03 localhost.localdomain systemd[1]: Unit nginx.service entered failed state.
-Jul 07 17:15:03 localhost.localdomain systemd[1]: nginx.service failed.
+   Active: failed (Result: exit-code)
 ```
 
 > Разрешим в SELinux работу nginx на порту TCP 4881 c помощью формирования и установки модуля SELinux:
@@ -178,19 +143,7 @@ semodule -i nginx.pp
 [root@localhost ~]# systemctl status nginx
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Fri 2023-07-07 17:25:02 UTC; 9s ago
-  Process: 1797 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 1795 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 1793 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 1799 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─1799 nginx: master process /usr/sbin/nginx
-           └─1800 nginx: worker process
-
-Jul 07 17:25:02 localhost.localdomain systemd[1]: Starting The nginx HTTP and reverse proxy server...
-Jul 07 17:25:02 localhost.localdomain nginx[1795]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-Jul 07 17:25:02 localhost.localdomain nginx[1795]: nginx: configuration file /etc/nginx/nginx.conf test is successful
-Jul 07 17:25:02 localhost.localdomain systemd[1]: Started The nginx HTTP and reverse proxy server.
+   Active: active (running) 
 ```
 
 # Part 2
