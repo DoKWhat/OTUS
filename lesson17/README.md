@@ -39,10 +39,7 @@ type=AVC msg=audit(1688748432.680:531): avc:  denied  { name_bind } for  pid=210
 [root@localhost ~]# systemctl status nginx
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Tue 2023-02-06 17:06:52 UTC; 9s ago
-  Process: 3154 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 3151 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 3150 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
+   Active: active (running) 
 ```
 > Также можно проверить работу nginx из браузера. Заходим в любой браузер на хосте и переходим по адресу http://127.0.0.1:4881
 
