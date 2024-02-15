@@ -3,7 +3,7 @@
 
 MACHINES = {
   :inetRouter => {
-        :box_name => "debian/bullseye64",
+        :box_name => "generic/centos8s",
         :vm_name => "inetRouter",
         :net => [
                    #["10.4.111.51", 1, "255.255.255.0", "inet"],
@@ -14,7 +14,7 @@ MACHINES = {
                 ]
   },
   :centralRouter => {
-        :box_name => "debian/bullseye64",
+        :box_name => "generic/centos8s",
         :vm_name => "centralRouter",
         :net => [
                    [ "127.0.0.4",  2,  "255.255.255.0",  "router-net"],
@@ -25,7 +25,7 @@ MACHINES = {
   },
 
   :office1Router => {
-        :box_name => "debian/bullseye64",
+        :box_name => "generic/centos8s",
         :vm_name => "office1Router",
         :net => [
                    [ "192.168.255.10",  2,  "255.255.255.252",  "office1-central"],
@@ -38,7 +38,7 @@ MACHINES = {
   },
 
   :testClient1 => {
-        :box_name => "debian/bullseye64",
+        :box_name => "generic/centos8s",
         :vm_name => "testClient1",
         :net => [
                    [ "127.0.0.9",  2,  "255.255.255.0",  "vlan10"],
@@ -48,7 +48,7 @@ MACHINES = {
 
 
   :testServer1 => {
-        :box_name => "debian/bullseye64",
+        :box_name => "generic/centos8s",
         :vm_name => "testServer1",
         :net => [
                    [ "127.0.0.10",  2,  "255.255.255.0",  "vlan10"],
@@ -58,7 +58,7 @@ MACHINES = {
   
 
   :testClient2 => {
-        :box_name => "debian/bullseye64",
+        :box_name => "bento/ubuntu-20.04",
         :vm_name => "testClient2",
         :net => [
                    [ "127.0.0.11",  2,  "255.255.255.0",  "vlan20"],
@@ -68,7 +68,7 @@ MACHINES = {
 
 
   :testServer2 => {
-        :box_name => "debian/bullseye64",
+        :box_name => "bento/ubuntu-20.04",
         :vm_name => "testServer2",
         :net => [
                    [ "127.0.0.12",  2,  "255.255.255.0",  "vlan20"],

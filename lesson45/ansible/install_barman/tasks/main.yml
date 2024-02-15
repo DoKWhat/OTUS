@@ -90,7 +90,7 @@
   - name: generate SSH key for barman
     user:
       name: barman
-      uid: 994
+      #uid: 994
       shell: /bin/bash
       generate_ssh_key: yes
       ssh_key_type: rsa
